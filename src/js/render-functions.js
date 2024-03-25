@@ -1,5 +1,6 @@
 export function photosTemplate(photos) {
-  return photos.map(
+  return photos
+    .map(
       photo => `<li class="gallery-item">
       <a class="gallery-link" href="${photo.largeImageURL}">
         <img class="gallery-image" src="${photo.webformatURL}" alt="${photo.tags}" />
