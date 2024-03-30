@@ -15,38 +15,52 @@ let lightbox = new SimpleLightbox('.gallery a', {
 });
 lightbox.on('show.simplelightbox', function () {});
 
+const preloader = document.querySelector('.loader');
+
+function showLoader() {
+  return preloader.classList.remove('is-hidden');
+}
+function hideLoader() {
+  return preloader.classList.add('is-hidden');
+}
+
 form.addEventListener('submit', e => {
   e.preventDefault();
 
   const inputValue = e.target.elements.search.value.trim();
-
-  if (inputValue.length !== 0) {
-    gallery.innerHTML = '<span class="loader"></span>';
-    getPhotos(inputValue)
-      .then(photos => {
-        const markup = photosTemplate(photos.hits);
-        if (photos.hits.length === 0) {
-          iziToast.error({
-            message:
-              'Sorry, there are no images matching your search query. Please try again!',
-            position: 'topRight',
-            color: 'red',
-          });
-        } else {
-          gallery.innerHTML = markup;
-          lightbox.refresh();
-        }
-      })
-      .catch(error => {
+  if (inputValue === '') {
+    return iziToast.warning({
+      message: 'Please complete the field!',
+      color: 'red',
+      position: 'topRight',
+    });
+  }
+  showLoader();
+  getPhotos(inputValue)
+    .then(photos => {
+      const markup = photosTemplate(photos.hits);
+      if (photos.hits.length === 0) {
         iziToast.error({
           message:
             'Sorry, there are no images matching your search query. Please try again!',
           position: 'topRight',
           color: 'red',
         });
-      })
-      .finally(() => {
-        form.reset();
+      } else {
+        gallery.insertAdjacentHTML('beforeend', markup);
+        lightbox.refresh();
+      }
+    })
+    .catch(error => {
+      iziToast.error({
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
+        position: 'topRight',
+        color: 'red',
       });
-  }
+    })
+    .finally(() => {
+      hideLoader();
+      form.reset();
+    });
 });
