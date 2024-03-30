@@ -23,6 +23,7 @@ function showLoader() {
 function hideLoader() {
   return preloader.classList.add('is-hidden');
 }
+hideLoader();
 
 form.addEventListener('submit', e => {
   e.preventDefault();
@@ -47,7 +48,7 @@ form.addEventListener('submit', e => {
           color: 'red',
         });
       } else {
-        gallery.insertAdjacentHTML('beforeend', markup);
+        gallery.innerHTML = markup;
         lightbox.refresh();
       }
     })
